@@ -1,36 +1,52 @@
 # Standard Library
 import re
 from collections import Counter, defaultdict
+from functools import partial
+
+LetterCount = Counter[str]
+DictCounter = dict[int, LetterCount]
+WordList = list[str]
 
 
-def get_words() -> list[str]:
+def get_words() -> WordList:
     with open("words.txt") as f:
         words: set[str] = set(f.read().strip().strip("\n\r").split("\n"))
 
     return [word for word in words if len(word) == 5]
 
 
-def get_counts(words: list[str]) -> Counter[str]:
+def get_counts(words: WordList) -> LetterCount:
     return Counter("".join(words))
 
 
-def score_word(word: str, counts: Counter[str]) -> int:
-    return sum(counts[letter] for letter in set(word))
+def get_positional_counts(words: WordList) -> DictCounter:
+    positional_counts = defaultdict(Counter)
+    for word in words:
+        for i, letter in enumerate(word):
+            positional_counts[i][letter] += 1
+
+    return positional_counts
 
 
-def sort_words(words: list[str]) -> list[str]:
+def score_word(counts: LetterCount, positional_counts: DictCounter, word: str) -> int:
+    score = sum(positional_counts[i][letter] for i, letter in enumerate(word))
+    return score + sum(counts[letter] for letter in set(word))
+
+
+def make_score_function(words: WordList) -> partial:
+    positional_counts = get_positional_counts(words)
     counts = get_counts(words)
-    return list(sorted(list(words), key=lambda word: score_word(word, counts), reverse=True))
+    return partial(score_word, counts, positional_counts)
 
 
-def filter_words(words: list[str], regex: str, found: set[str]) -> list[str]:
+def sort_words(words: WordList) -> WordList:
+    score_func = make_score_function(words)
+    return list(sorted(list(words), key=lambda word: score_func(word), reverse=True))
+
+
+def filter_words(words: WordList, regex: str, found: set[str]) -> WordList:
     r = re.compile(regex)
-    filterd = []
-    for word in list(filter(r.match, words)):
-        if found.issubset(set(word)):
-            filterd.append(word)
-
-    return filterd
+    return [word for word in list(filter(r.match, words)) if found.issubset(set(word))]
 
 
 words = get_words()
@@ -43,7 +59,7 @@ print("Wordle solver")
 print("=============")
 print("Input '*' for no match, lowercase for match in wrong position, uppercase for match in correct position")
 print("")
-while any([True for p in positions if p == "*"]):
+while any(True for p in positions if p == "*"):
     words = sort_words(words)
     try:
         word = words[0]
