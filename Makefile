@@ -37,11 +37,11 @@ requirements.in:
 
 requirements.%.txt: requirements.%.in
 	@echo "Builing $@"
-	@pip-compile -q -o $@ $^
+	@pip-compile --generate-hashes --allow-unsafe -q -o $@ $^
 
 requirements.txt: requirements.in
 	@echo "Builing $@"
-	@pip-compile -q $^
+	@pip-compile --generate-hashes -q $^
 
 .direnv: .envrc
 	pip install --upgrade pip
