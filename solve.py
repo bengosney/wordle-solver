@@ -4,6 +4,7 @@ import webbrowser
 from collections import Counter, defaultdict
 from functools import partial
 from time import sleep
+from typing import DefaultDict
 
 # Third Party
 import pyautogui
@@ -11,6 +12,10 @@ import pyautogui
 LetterCount = Counter[str]
 DictCounter = dict[int, LetterCount]
 WordList = list[str]
+Vec = tuple[int, int]
+Row = tuple[Vec, Vec, Vec, Vec, Vec]
+Grid = tuple[Row, Row, Row, Row, Row, Row]
+Colour = tuple[int, int, int]
 
 
 def get_words() -> WordList:
@@ -25,7 +30,7 @@ def get_counts(words: WordList) -> LetterCount:
 
 
 def get_positional_counts(words: WordList) -> DictCounter:
-    positional_counts = defaultdict(Counter)
+    positional_counts: DefaultDict[int, LetterCount] = defaultdict(Counter)
     for word in words:
         for i, letter in enumerate(word):
             positional_counts[i][letter] += 1
@@ -54,6 +59,11 @@ def filter_words(words: WordList, regex: str, found: set[str]) -> WordList:
     return [word for word in list(filter(r.match, words)) if found.issubset(set(word))]
 
 
+print("Wordle solver")
+print("=============")
+# print("Input '*' for no match, lowercase for match in wrong position, uppercase for match in correct position")
+print("")
+
 print("Opening browser...")
 webbrowser.open("https://www.powerlanguage.co.uk/wordle/")
 sleep(3)
@@ -68,15 +78,6 @@ print(grid_location)
 if grid_location is None:
     raise Exception("Could not find grid")
 
-Vec = tuple[int, int]
-Row = tuple[
-    Vec,
-    Vec,
-    Vec,
-    Vec,
-    Vec,
-]
-Grid = tuple[Row, Row, Row, Row, Row, Row]
 
 POSITIONS: Grid = (
     ((18, 18), (85, 18), (150, 18), (215, 18), (280, 18)),
@@ -86,22 +87,20 @@ POSITIONS: Grid = (
     ((18, 290), (82, 290), (150, 290), (215, 290), (280, 290)),
     ((18, 355), (82, 355), (150, 355), (215, 355), (280, 355)),
 )
-COLOUR_NOT_FOUND = (120, 124, 126)
-COLOUR_WRONG_POSITION = (201, 180, 88)
-COLOUR_FOUND = (106, 170, 100)
+COLOUR_NOT_FOUND: Colour = (120, 124, 126)
+COLOUR_WRONG_POSITION: Colour = (201, 180, 88)
+COLOUR_FOUND: Colour = (106, 170, 100)
 
-words = get_words()
+words: WordList = get_words()
 
-used = set()
-found = set()
+used: set[str] = set()
+found: set[str] = set()
 cant: dict[int, set[str]] = defaultdict(lambda: set())
-positions = ["*", "*", "*", "*", "*"]
-print("Wordle solver")
-print("=============")
-print("Input '*' for no match, lowercase for match in wrong position, uppercase for match in correct position")
-print("")
-# while any(True for p in positions if p == "*"):
-for i in range(6):
+positions: list[str] = ["*", "*", "*", "*", "*"]
+
+guess_count = -1
+while any(True for _p in positions if _p == "*"):
+    guess_count += 1
     words = sort_words(words)
     try:
         word = words[0]
@@ -115,7 +114,7 @@ for i in range(6):
     screenshot = pyautogui.screenshot(region=grid_location)
     result = ""
     for p in range(5):
-        pixel = screenshot.getpixel(POSITIONS[i][p])
+        pixel = screenshot.getpixel(POSITIONS[guess_count][p])
         if pixel == COLOUR_NOT_FOUND:
             result += "*"
         if pixel == COLOUR_WRONG_POSITION:
@@ -123,7 +122,7 @@ for i in range(6):
         if pixel == COLOUR_FOUND:
             result += word[p].upper()
 
-    print(f"found {result}")
+    print(f"Found: {result}")
 
     for p, r in enumerate(result):
         if r == "*":
@@ -137,11 +136,11 @@ for i in range(6):
             print("Invalid input")
 
     regex = ""
-    for i, p in enumerate(positions):
-        if p == "*":
+    for i, c in enumerate(positions):
+        if c == "*":
             cantbe = "".join(used | cant[i])
             regex += f"[^{cantbe}]"
         else:
-            regex += p
+            regex += c
 
     words = filter_words(words, regex, found)
