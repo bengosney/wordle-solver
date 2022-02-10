@@ -1,21 +1,15 @@
 # Standard Library
 import re
-import webbrowser
 from collections import Counter, defaultdict
 from functools import partial
-from time import sleep
 from typing import DefaultDict
 
-# Third Party
-import pyautogui
+# First Party
+from control.wordle import Wordle
 
 LetterCount = Counter[str]
 DictCounter = dict[int, LetterCount]
 WordList = list[str]
-Vec = tuple[int, int]
-Row = tuple[Vec, Vec, Vec, Vec, Vec]
-Grid = tuple[Row, Row, Row, Row, Row, Row]
-Colour = tuple[int, int, int]
 
 
 def get_words() -> WordList:
@@ -64,32 +58,16 @@ print("=============")
 # print("Input '*' for no match, lowercase for match in wrong position, uppercase for match in correct position")
 print("")
 
-print("Opening browser...")
-webbrowser.open("https://www.powerlanguage.co.uk/wordle/")
-sleep(3)
+wordle = Wordle()
 
-close = pyautogui.locateCenterOnScreen("close.png")
-if close is not None:
-    pyautogui.click(close)
-    sleep(1)
+wordle.open()
 
-grid_location = pyautogui.locateOnScreen("grid.png")
-print(grid_location)
-if grid_location is None:
-    raise Exception("Could not find grid")
+if wordle.check_share():
+    print("Already shared")
+    exit(0)
 
-
-POSITIONS: Grid = (
-    ((18, 18), (85, 18), (150, 18), (215, 18), (280, 18)),
-    ((18, 85), (82, 85), (150, 85), (215, 85), (280, 85)),
-    ((18, 150), (82, 150), (150, 150), (215, 150), (280, 150)),
-    ((18, 220), (82, 220), (150, 220), (215, 220), (280, 220)),
-    ((18, 290), (82, 290), (150, 290), (215, 290), (280, 290)),
-    ((18, 355), (82, 355), (150, 355), (215, 355), (280, 355)),
-)
-COLOUR_NOT_FOUND: Colour = (120, 124, 126)
-COLOUR_WRONG_POSITION: Colour = (201, 180, 88)
-COLOUR_FOUND: Colour = (106, 170, 100)
+wordle.close_help()
+wordle.locate_grid()
 
 words: WordList = get_words()
 
@@ -107,22 +85,8 @@ while any(True for _p in positions if _p == "*"):
     except IndexError:
         print("No words left")
         break
-    print(f"Trying {word}")
 
-    pyautogui.write(word + "\n")
-    sleep(2)
-    screenshot = pyautogui.screenshot(region=grid_location)
-    result = ""
-    for p in range(5):
-        pixel = screenshot.getpixel(POSITIONS[guess_count][p])
-        if pixel == COLOUR_NOT_FOUND:
-            result += "*"
-        if pixel == COLOUR_WRONG_POSITION:
-            result += word[p].lower()
-        if pixel == COLOUR_FOUND:
-            result += word[p].upper()
-
-    print(f"Found: {result}")
+    result = wordle.try_word(word + "\n", guess_count)
 
     for p, r in enumerate(result):
         if r == "*":
@@ -144,3 +108,5 @@ while any(True for _p in positions if _p == "*"):
             regex += c
 
     words = filter_words(words, regex, found)
+
+wordle.check_share()
