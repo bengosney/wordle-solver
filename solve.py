@@ -2,6 +2,7 @@
 import re
 from collections import Counter, defaultdict
 from functools import partial
+from time import sleep
 from typing import DefaultDict
 
 # First Party
@@ -109,4 +110,5 @@ while any(True for _p in positions if _p == "*"):
 
     words = filter_words(words, regex, found)
 
+sleep(2)
 wordle.check_share()

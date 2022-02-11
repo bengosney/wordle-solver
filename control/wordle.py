@@ -27,24 +27,24 @@ class Wordle:
     def open(self, sleep_time: int = 3) -> None:
         print("Opening browser...")
         webbrowser.open("https://www.powerlanguage.co.uk/wordle/")
-        sleep(3)
+        sleep(sleep_time)
 
     def check_share(self) -> bool:
-        if (center := pyautogui.locateCenterOnScreen("ui-elements/share.png")) is not None:
+        if (center := pyautogui.locateCenterOnScreen("ui-elements/share.png", grayscale=True)) is not None:
             pyautogui.click(center)
             return True
         return False
 
     def close_help(self) -> None:
         print("Checking for help screen")
-        close = pyautogui.locateCenterOnScreen("ui-elements/close.png")
+        close = pyautogui.locateCenterOnScreen("ui-elements/close.png", grayscale=True)
         if close is not None:
             pyautogui.click(close)
             sleep(1)
 
     def locate_grid(self):
         print("Finding the grid")
-        self.grid_location = pyautogui.locateOnScreen("ui-elements/grid.png")
+        self.grid_location = pyautogui.locateOnScreen("ui-elements/grid.png", grayscale=True)
         if self.grid_location is None:
             raise Exception("Could not find grid")
 
