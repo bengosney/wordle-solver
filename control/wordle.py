@@ -26,7 +26,7 @@ class Wordle:
 
     def open(self, sleep_time: int = 3) -> None:
         print("Opening browser...")
-        webbrowser.open("https://www.powerlanguage.co.uk/wordle/")
+        webbrowser.open("https://www.nytimes.com/games/wordle/index.html")
         sleep(sleep_time)
 
     def check_share(self) -> bool:
@@ -40,6 +40,13 @@ class Wordle:
         close = pyautogui.locateCenterOnScreen("ui-elements/close.png", grayscale=True)
         if close is not None:
             pyautogui.click(close)
+            sleep(1)
+
+    def reject_cookies(self) -> None:
+        print("Rejecting cookies")
+        reject = pyautogui.locateCenterOnScreen("ui-elements/reject.png", grayscale=True)
+        if reject is not None:
+            pyautogui.click(reject)
             sleep(1)
 
     def locate_grid(self):

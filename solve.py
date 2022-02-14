@@ -67,6 +67,7 @@ if wordle.check_share():
     print("Already shared")
     exit(0)
 
+wordle.reject_cookies()
 wordle.close_help()
 wordle.locate_grid()
 
