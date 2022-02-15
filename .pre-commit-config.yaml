@@ -3,15 +3,15 @@
 exclude: 'migrations/.*\.py|Procfile|[aw]sgi\.py|node_modules|.git|\.polar|inputs/.*'
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.1.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-merge-conflict
-      #- id: file-contents-sorter
-      #  files: requirements.in
+      - id: file-contents-sorter
+        files: requirements.in
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.29.1
+    rev: v2.31.0
     hooks:
       - id: pyupgrade
         args: [--py310-plus]
@@ -30,7 +30,7 @@ repos:
       - id: pycln
         args: [--config=pyproject.toml]
   - repo: https://github.com/psf/black
-    rev: 21.11b1
+    rev: 22.1.0
     hooks:
       - id: black
   - repo: https://github.com/pycqa/isort
@@ -46,7 +46,7 @@ repos:
     hooks:
       - id: flake8
   - repo: https://github.com/jazzband/pip-tools
-    rev: 6.4.0
+    rev: 6.5.1
     hooks:
       - id: pip-compile
         files: ^(setup\.py|requirements.txt|requirements.in)$

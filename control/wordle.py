@@ -37,15 +37,13 @@ class Wordle:
 
     def close_help(self) -> None:
         print("Checking for help screen")
-        close = pyautogui.locateCenterOnScreen("ui-elements/close.png", grayscale=True)
-        if close is not None:
+        if (close := pyautogui.locateCenterOnScreen("ui-elements/close.png", grayscale=True)) is not None:
             pyautogui.click(close)
             sleep(1)
 
     def reject_cookies(self) -> None:
         print("Rejecting cookies")
-        reject = pyautogui.locateCenterOnScreen("ui-elements/reject.png", grayscale=True)
-        if reject is not None:
+        if (reject := pyautogui.locateCenterOnScreen("ui-elements/reject.png", grayscale=True)) is not None:
             pyautogui.click(reject)
             sleep(1)
 

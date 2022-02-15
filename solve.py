@@ -56,7 +56,6 @@ def filter_words(words: WordList, regex: str, found: set[str]) -> WordList:
 
 print("Wordle solver")
 print("=============")
-# print("Input '*' for no match, lowercase for match in wrong position, uppercase for match in correct position")
 print("")
 
 wordle = Wordle()
@@ -65,11 +64,14 @@ wordle.open()
 
 if wordle.check_share():
     print("Already shared")
-    exit(0)
+    exit
 
-wordle.reject_cookies()
-wordle.close_help()
-wordle.locate_grid()
+try:
+    wordle.locate_grid()
+except Exception:
+    wordle.reject_cookies()
+    wordle.close_help()
+    wordle.locate_grid()
 
 words: WordList = get_words()
 

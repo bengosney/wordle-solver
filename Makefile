@@ -1,4 +1,4 @@
-.PHONY: help clean test install all init dev
+.PHONY: help clean test install all init dev solve
 .DEFAULT_GOAL := dev
 
 HOOKS=$(.git/hooks/pre-commit)
@@ -71,3 +71,6 @@ install: requirements.txt $(REQS) ## Install development requirements (default)
 
 dev: init install ## Start work
 	code .
+
+solve: init install
+	python solve.py
