@@ -1,14 +1,33 @@
 # Standard Library
 import webbrowser
+from enum import Enum
 from time import sleep
+from typing import Iterable
 
 # Third Party
 import pyautogui
+from colour import Color
 
 Vec = tuple[int, int]
 Row = tuple[Vec, Vec, Vec, Vec, Vec]
 Grid = tuple[Row, Row, Row, Row, Row, Row]
 Colour = tuple[int, int, int]
+
+
+class Colours(float, Enum):
+    NOT_FOUND = 0.5555555555555557
+    WRONG_POSITION = 0.1266025641025642
+    FOUND = 0.34541062801932365
+
+    @classmethod
+    def to_list(cls) -> Iterable:
+        return [float(item.value) for _, item in cls.__members__.items()]
+
+    @classmethod
+    def closest(cls, colour: Colour) -> "Colours":
+        hue: float = Color(rgb=(colour[0] / 255, colour[1] / 255, colour[2] / 255)).get_hue()
+
+        return min(cls.to_list(), key=lambda h: abs(h - hue))
 
 
 class Wordle:
@@ -24,7 +43,7 @@ class Wordle:
     COLOUR_WRONG_POSITION: Colour = (201, 180, 88)
     COLOUR_FOUND: Colour = (106, 170, 100)
 
-    def open(self, sleep_time: int = 3) -> None:
+    def open(self, sleep_time: int = 1) -> None:
         print("Opening browser...")
         webbrowser.open("https://www.nytimes.com/games/wordle/index.html")
         sleep(sleep_time)
@@ -62,12 +81,13 @@ class Wordle:
         result = ""
         for p in range(5):
             pixel = screenshot.getpixel(self.POSITIONS[guess_count][p])
-            if pixel == self.COLOUR_NOT_FOUND:
-                result += "*"
-            if pixel == self.COLOUR_WRONG_POSITION:
-                result += word[p].lower()
-            if pixel == self.COLOUR_FOUND:
-                result += word[p].upper()
+            match Colours.closest(pixel):
+                case Colours.NOT_FOUND:
+                    result += "*"
+                case Colours.WRONG_POSITION:
+                    result += word[p].lower()
+                case Colours.FOUND:
+                    result += word[p].upper()
 
         print(f"Found: {result}")
         return result

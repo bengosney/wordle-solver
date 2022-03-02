@@ -62,13 +62,12 @@ wordle = Wordle()
 
 wordle.open()
 
-if wordle.check_share():
-    print("Already shared")
-    exit
-
 try:
     wordle.locate_grid()
 except Exception:
+    if wordle.check_share():
+        print("Already shared")
+        exit()
     wordle.reject_cookies()
     wordle.close_help()
     wordle.locate_grid()

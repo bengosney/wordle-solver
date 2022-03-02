@@ -3,3 +3,4 @@ pip-tools
 pytest
 icecream
 mypy
+black

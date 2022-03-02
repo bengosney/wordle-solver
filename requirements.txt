@@ -4,6 +4,8 @@
 #
 #    pip-compile
 #
+colour==0.1.5
+    # via -r requirements.in
 mouseinfo==0.1.3
     # via pyautogui
 pillow==9.0.1

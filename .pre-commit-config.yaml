@@ -10,10 +10,6 @@ repos:
       - id: check-merge-conflict
       - id: file-contents-sorter
         files: requirements.in
-  - repo: https://github.com/bwhmather/ssort
-    rev: v0.10.2
-    hooks:
-    - id: ssort
   - repo: https://github.com/asottile/pyupgrade
     rev: v2.31.0
     hooks:
