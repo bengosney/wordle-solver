@@ -71,6 +71,7 @@ class Wordle:
         self.grid_location = pyautogui.locateOnScreen("ui-elements/grid.png", grayscale=True)
         if self.grid_location is None:
             raise Exception("Could not find grid")
+        pyautogui.click(self.grid_location)
 
     def try_word(self, word: str, guess_count: int) -> str:
         print(f"Trying {word}")
