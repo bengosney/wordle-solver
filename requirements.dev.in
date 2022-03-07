@@ -4,3 +4,4 @@ pytest
 icecream
 mypy
 black
+commitizen
