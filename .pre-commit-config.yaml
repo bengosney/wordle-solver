@@ -53,4 +53,10 @@ repos:
   - repo: https://github.com/Lucas-C/pre-commit-hooks-go
     rev: v1.0.1
     hooks:
-    -   id: checkmake
+      - id: checkmake
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v2.21.2
+    hooks:
+      - id: commitizen
+        stages:
+          - commit-msg
