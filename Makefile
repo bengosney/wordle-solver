@@ -37,11 +37,11 @@ requirements.in:
 
 requirements.%.txt: requirements.%.in
 	@echo "Builing $@"
-	@pip-compile --generate-hashes --allow-unsafe -q -o $@ $^
+	@python -m piptools compile --generate-hashes --allow-unsafe -q -o $@ $^
 
 requirements.txt: requirements.in
 	@echo "Builing $@"
-	@pip-compile --generate-hashes -q $^
+	@python -m piptools compile --generate-hashes -q $^
 
 .direnv: .envrc
 	pip install --upgrade pip
@@ -67,7 +67,7 @@ clean: ## Remove all build files
 
 install: requirements.txt $(REQS) ## Install development requirements (default)
 	@echo "Installing $^"
-	@pip-sync $^
+	@python -m piptools sync $^
 
 dev: init install ## Start work
 	code .
