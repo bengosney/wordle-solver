@@ -109,7 +109,7 @@ while any(True for _p in positions if _p == "*"):
             regex += f"[^{cantbe}]"
         else:
             regex += c
-
+    print(regex)
     words = filter_words(words, regex, found)
 
 sleep(2)

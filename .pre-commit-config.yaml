@@ -3,7 +3,7 @@
 exclude: 'migrations/.*\.py|Procfile|[aw]sgi\.py|node_modules|.git|\.polar|inputs/.*'
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v4.3.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -11,7 +11,7 @@ repos:
       - id: file-contents-sorter
         files: requirements.in
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.31.0
+    rev: v2.37.3
     hooks:
       - id: pyupgrade
         args: [--py310-plus]
@@ -25,12 +25,12 @@ repos:
       - id: docformatter
         args: [--in-place]
   - repo: https://github.com/hadialqattan/pycln
-    rev: v1.2.0
+    rev: v2.1.1
     hooks:
       - id: pycln
         args: [--config=pyproject.toml]
   - repo: https://github.com/psf/black
-    rev: 22.1.0
+    rev: 22.6.0
     hooks:
       - id: black
   - repo: https://github.com/pycqa/isort
@@ -45,14 +45,3 @@ repos:
     rev: 3.9.2
     hooks:
       - id: flake8
-  - repo: https://github.com/jazzband/pip-tools
-    rev: 6.5.1
-    hooks:
-      - id: pip-compile
-        files: ^(setup\.py|requirements.txt|requirements.in)$
-  - repo: https://github.com/commitizen-tools/commitizen
-    rev: v2.21.2
-    hooks:
-      - id: commitizen
-        stages:
-          - commit-msg

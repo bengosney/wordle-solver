@@ -1,8 +1,8 @@
 # Standard Library
 import webbrowser
+from collections.abc import Iterable
 from enum import Enum
 from time import sleep
-from typing import Iterable
 
 # Third Party
 import pyautogui
@@ -68,7 +68,7 @@ class Wordle:
 
     def locate_grid(self):
         print("Finding the grid")
-        self.grid_location = pyautogui.locateOnScreen("ui-elements/grid.png", grayscale=True)
+        self.grid_location = pyautogui.locateOnScreen("ui-elements/grid.png", grayscale=True, minSearchTime=5)
         if self.grid_location is None:
             raise Exception("Could not find grid")
         pyautogui.click(self.grid_location)
