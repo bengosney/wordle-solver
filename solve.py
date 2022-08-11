@@ -105,7 +105,7 @@ while any(True for _p in positions if _p == "*"):
     regex = ""
     for i, c in enumerate(positions):
         if c == "*":
-            cantbe = "".join(used | cant[i])
+            cantbe = "".join((used - found) | cant[i])
             regex += f"[^{cantbe}]"
         else:
             regex += c
