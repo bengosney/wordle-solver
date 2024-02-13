@@ -42,32 +42,36 @@ class Wordle:
     COLOUR_NOT_FOUND: Colour = (120, 124, 126)
     COLOUR_WRONG_POSITION: Colour = (201, 180, 88)
     COLOUR_FOUND: Colour = (106, 170, 100)
+    grid_location: tuple[int, int, int, int] | None
 
     def open(self, sleep_time: int = 1) -> None:
         print("Opening browser...")
         webbrowser.open("https://www.nytimes.com/games/wordle/index.html")
         sleep(sleep_time)
 
-    def check_share(self) -> bool:
-        if (center := pyautogui.locateCenterOnScreen("ui-elements/share.png", grayscale=True)) is not None:
-            pyautogui.click(center)
+    def _click_image(self, image: str, minSearchTime: int = 5) -> bool:
+        sleep(1)
+        if (location := pyautogui.locateCenterOnScreen(image, grayscale=True, minSearchTime=minSearchTime)) is not None:
+            pyautogui.click(location)
             return True
         return False
 
-    def close_help(self) -> None:
-        print("Checking for help screen")
-        if (close := pyautogui.locateCenterOnScreen("ui-elements/close.png", grayscale=True)) is not None:
-            pyautogui.click(close)
-            sleep(1)
+    def click_play(self) -> None:
+        print("Clicking play")
+        if not self._click_image("ui-elements/play.png"):
+            raise Exception("Could not find play button")
 
-    def reject_cookies(self) -> None:
-        print("Rejecting cookies")
-        if (reject := pyautogui.locateCenterOnScreen("ui-elements/reject.png", grayscale=True)) is not None:
-            pyautogui.click(reject)
-            sleep(1)
+    def click_close_help(self) -> None:
+        print("Closing help")
+        self._click_image("ui-elements/close.png", minSearchTime=1)
 
-    def locate_grid(self):
+    def click_share(self) -> None:
+        print("Clicking share")
+        self._click_image("ui-elements/share.png")
+
+    def locate_grid(self) -> None:
         print("Finding the grid")
+        sleep(1)
         self.grid_location = pyautogui.locateOnScreen("ui-elements/grid.png", grayscale=True, minSearchTime=5)
         if self.grid_location is None:
             raise Exception("Could not find grid")

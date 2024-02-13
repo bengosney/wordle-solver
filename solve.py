@@ -2,7 +2,6 @@
 import re
 from collections import Counter, defaultdict
 from functools import partial
-from time import sleep
 from typing import DefaultDict
 
 # First Party
@@ -62,21 +61,15 @@ wordle = Wordle()
 
 wordle.open()
 
-try:
-    wordle.locate_grid()
-except Exception:
-    if wordle.check_share():
-        print("Already shared")
-        exit()
-    wordle.reject_cookies()
-    wordle.close_help()
-    wordle.locate_grid()
+wordle.click_play()
+wordle.click_close_help()
+wordle.locate_grid()
 
 words: WordList = get_words()
 
 used: set[str] = set()
 found: set[str] = set()
-cant: dict[int, set[str]] = defaultdict(lambda: set())
+cant: dict[int, set[str]] = defaultdict(set)
 positions: list[str] = ["*", "*", "*", "*", "*"]
 
 guess_count = -1
@@ -112,5 +105,5 @@ while any(True for _p in positions if _p == "*"):
     print(regex)
     words = filter_words(words, regex, found)
 
-sleep(2)
-wordle.check_share()
+
+wordle.click_share()

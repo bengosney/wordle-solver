@@ -53,7 +53,7 @@ requirements.txt: requirements.in
 
 .envrc:
 	@echo "Setting up .envrc then stopping"
-	@echo "layout python python3.10" > $@
+	@echo "layout python python3.12" > $@
 	@touch -d '+1 minute' $@
 	@false
 
